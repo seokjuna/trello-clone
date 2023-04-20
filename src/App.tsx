@@ -1,7 +1,8 @@
-import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "./atoms";
+import DraggableCard from "./components/DraggableCard";
 
 const Wrapper = styled.div`
   display: flex;
@@ -27,13 +28,6 @@ const Board = styled.div`
   min-height: 200px;
 `;
 
-const Card = styled.div`
-  background-color: ${(props) => props.theme.cardColor};
-  border-radius: 5px;
-  margin-bottom: 5px;
-  padding: 10px 10px;
-`;
-
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
   const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
@@ -41,17 +35,8 @@ function App() {
 
     setToDos((oldToDos) => {
       const toDosCopy = [...oldToDos];
-      // 1) Delete item on source.index
-      console.log("Delete item on", source.index);
-      console.log(toDosCopy);
       toDosCopy.splice(source.index, 1);
-      console.log("Deleted item");
-      console.log(toDosCopy);
-
-      console.log("Put back", draggableId, "on ", destination.index);
-      // 2) Put back the item on the destination.index
       toDosCopy.splice(destination?.index, 0, draggableId);
-      console.log(toDosCopy);
       return toDosCopy;
     });
   };
@@ -64,17 +49,7 @@ function App() {
             {(magic, snapshot) => (
               <Board ref={magic.innerRef} {...magic.droppableProps}>
                 {toDos.map((toDo, index) => (
-                  <Draggable draggableId={toDo} index={index} key={toDo}>
-                    {(magic) => (
-                      <Card 
-                        ref={magic.innerRef} 
-                        {...magic.draggableProps}
-                        {...magic.dragHandleProps}
-                      >
-                        {toDo}
-                      </Card>
-                    )}
-                  </Draggable>
+                  <DraggableCard key={toDo} index={index} toDo={toDo} />
                 ))}
                 {magic.placeholder}
               </Board>
