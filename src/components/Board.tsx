@@ -5,12 +5,12 @@ import DraggableCard from "./DraggableCard";
 const Wrapper = styled.div`
   width: 300px;
   padding-top: 10px;
-  padding: 20px 10px;
   border-radius: 5px;
   background-color: ${(props) => props.theme.boardColor};
   min-height: 300px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
 
 const Title = styled.h2`
@@ -22,12 +22,13 @@ const Title = styled.h2`
 
 const Area = styled.div<IAreaProps>`
     flex-grow: 1;
-    background-color: ${(props) => props.isDraggingOver ? "pink" : props.isDraggingFormThis ? "red" : "blue"}
+    background-color: ${(props) => props.isDraggingOver ? "#dfe6e9" : props.isDraggingFromThis ? "#b2bec3": "transparent"};
     transition: background-color 0.3s ease-in-out;
+    padding: 20px;
 `;
 
 interface IAreaProps {
-    isDraggingFormThis: boolean;
+    isDraggingFromThis: boolean;
     isDraggingOver: boolean
 }
 
@@ -41,10 +42,10 @@ function Board({ toDos, boardId }: IBoardProps) {
         <Wrapper>
             <Title>{boardId}</Title>
             <Droppable droppableId={boardId}>
-                {(magic, snapshot) => (
+                {(magic, info) => (
                 <Area
-                    isDraggingOver={snapshot.isDraggingOver}
-                    isDraggingFormThis={Boolean(snapshot.draggingFromThisWith)}
+                    isDraggingOver={info.isDraggingOver}
+                    isDraggingFromThis={Boolean(info.draggingFromThisWith)}
                     ref={magic.innerRef} 
                     {...magic.droppableProps}
                 >
